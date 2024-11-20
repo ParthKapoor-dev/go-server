@@ -1,27 +1,46 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/parthkapoor-dev/go-server/cmd/api"
+	"github.com/parthkapoor-dev/go-server/config"
 	"github.com/parthkapoor-dev/go-server/db"
 )
 
 func main(){
 
 	db , err := db.NewMySQLStorage(*&mysql.Config{
-		User : "root",
-		Passwd: "asd",
-		Addr: "127.0.0.1:3306",
-		DBName: "go-server",
+		User : config.Envs.DBUser,
+		Passwd: config.Envs.DBPassword,
+		Addr: config.Envs.DBAddress,
+		DBName: config.Envs.DBName,
 		Net: "tcp",
 		AllowNativePasswords: true,
 		ParseTime: true,
 	}) 
 
-	server := api.APIServerSetup(":8080" , nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	initStorage(db);
+
+	server := api.APIServerSetup(":8080" , db)
 	if err := server.Run(); err != nil {
 		log.Fatal()
 	}
+}
+
+func initStorage( db *sql.DB){
+
+	err := db.Ping()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("DB Successfully connected!")
 }

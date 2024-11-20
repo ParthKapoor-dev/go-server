@@ -22,8 +22,8 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd <repository-name>
+git clone https://github.com/parthkapoor-dev/go-server
+cd go-server
 ```
 
 ### 2. Install Dependencies
